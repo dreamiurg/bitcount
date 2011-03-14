@@ -1,0 +1,32 @@
+Bit counting
+============
+
+This small programs mesures time required to count set bits in random data
+set. 
+
+More information about various algorithms:
+
+  - http://demiurg.com.ua/blog/2010/04/11/bit-counting/
+  - http://gurmeet.net/puzzles/fast-bit-counting-routines/
+  - http://graphics.stanford.edu/~seander/bithacks.html
+
+Compile and run without parameters. Being run on Mac OS X (Darwin Kernel
+Version 10.3.0, Intel Core 2 Duo 2.26 GHz), compiled under gcc version 4.2.1
+with -O3 optimization level it gives you the following results:
+
+---------------------------------------------
+8-bit lookup table calculation took 1.29 ms
+16-bit lookup table calculation took 2.08 ms
+
+---> Iterated methods
+Iterated        4.545 sec   22.000 Mcps
+Sparse          3.467 sec   28.846 Mcps
+Dense           3.598 sec   27.790 Mcps
+---> Parallel methods
+Parallel        1.227 sec   81.490 Mcps
+Nifty           1.299 sec   76.976 Mcps
+Hakmem          1.274 sec   78.504 Mcps
+---> Table lookup methods
+Precomp 8       0.805 sec  124.176 Mcps
+Precomp 16      0.765 sec  130.661 Mcps
+---------------------------------------------
