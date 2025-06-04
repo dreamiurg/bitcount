@@ -6,7 +6,15 @@
 #include <time.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <vector>
+#include <algorithm>
+#include <string>
 #include "bitcount_algorithms.h"
+
+struct Result {
+  std::string name;
+  double mcps;
+};
 
 class StopWatch {
 public:
@@ -42,7 +50,7 @@ private:
 // bit-counting function
 typedef int (*bc_function)(unsigned int);
 
-void run_test(const unsigned int iters, bc_function bcf, const char* name)
+double run_test(const unsigned int iters, bc_function bcf, const char* name)
 {
   StopWatch sw;
   sw.Start();
@@ -56,7 +64,9 @@ void run_test(const unsigned int iters, bc_function bcf, const char* name)
   sw.Stop();
   const unsigned long elapsed = sw.ElapsedMicrosec();
 
-  printf("%-12s %8.3f sec %8.3f Mcps\n", name, elapsed / 1000000.0, (double)iters / elapsed);
+  const double mcps = (double)iters / elapsed;
+  printf("%-12s %8.3f sec %8.3f Mcps\n", name, elapsed / 1000000.0, mcps);
+  return mcps;
 }
 
 int main()
@@ -80,22 +90,32 @@ int main()
   }
 
   const unsigned int iters = 100 * 1000 * 1000;
+  std::vector<Result> results;
+
   printf("\n---> Iterated methods\n");
-  run_test(iters, &bitcount, 			"Iterated");
-  run_test(iters, &bitcount_sparse, 	"Sparse");
-  run_test(iters, &bitcount_dense, 	"Dense");
+  results.push_back({"Iterated", run_test(iters, &bitcount, "Iterated")});
+  results.push_back({"Sparse",   run_test(iters, &bitcount_sparse, "Sparse")});
+  results.push_back({"Dense",    run_test(iters, &bitcount_dense, "Dense")});
 
   printf("---> Parallel methods\n");
-  run_test(iters, &bitcount_parallel, "Parallel");
-  run_test(iters, &bitcount_nifty, 	"Nifty");
-  run_test(iters, &bitcount_hakmem, 	"Hakmem");
+  results.push_back({"Parallel", run_test(iters, &bitcount_parallel, "Parallel")});
+  results.push_back({"Nifty",    run_test(iters, &bitcount_nifty, "Nifty")});
+  results.push_back({"Hakmem",   run_test(iters, &bitcount_hakmem, "Hakmem")});
 
   printf("---> Builtin method\n");
-  run_test(iters, &bitcount_builtin,    "Builtin");
+  results.push_back({"Builtin",  run_test(iters, &bitcount_builtin, "Builtin")});
 
   printf("---> Table lookup methods\n");
-  run_test(iters, &bitcount_precomp8, "Precomp 8");
-  run_test(iters, &bitcount_precomp16, "Precomp 16");
+  results.push_back({"Precomp 8",  run_test(iters, &bitcount_precomp8, "Precomp 8")});
+  results.push_back({"Precomp 16", run_test(iters, &bitcount_precomp16, "Precomp 16")});
+
+  std::sort(results.begin(), results.end(), [](const Result& a, const Result& b) { return a.mcps > b.mcps; });
+  const double slowest = results.back().mcps;
+
+  printf("\nSummary (fastest to slowest)\n");
+  for (const auto& r : results) {
+    printf("%-12s %5.1fx\n", r.name.c_str(), r.mcps / slowest);
+  }
 
   return 0;
 }
