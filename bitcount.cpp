@@ -90,6 +90,9 @@ int main()
   run_test(iters, &bitcount_nifty, 	"Nifty");
   run_test(iters, &bitcount_hakmem, 	"Hakmem");
 
+  printf("---> Builtin method\n");
+  run_test(iters, &bitcount_builtin,    "Builtin");
+
   printf("---> Table lookup methods\n");
   run_test(iters, &bitcount_precomp8, "Precomp 8");
   run_test(iters, &bitcount_precomp16, "Precomp 16");
