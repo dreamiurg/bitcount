@@ -1,6 +1,25 @@
 #ifndef BITCOUNT_ALGORITHMS_H
 #define BITCOUNT_ALGORITHMS_H
 
+#include <vector>
+
+struct BitCountAlgorithm {
+  const char* name;
+  int (*func)(unsigned int);
+  void (*init)();
+};
+
+std::vector<BitCountAlgorithm>& get_algorithms();
+
+#define REGISTER_BITCOUNT_ALGO(NAME, FUNC, INIT)           \
+  namespace {                                              \
+  struct Register_##FUNC {                                 \
+    Register_##FUNC() {                                    \
+      get_algorithms().push_back({NAME, FUNC, INIT});       \
+    }                                                      \
+  } register_##FUNC;                                       \
+  }
+
 int bitcount(unsigned int n);
 int bitcount_sparse(unsigned int n);
 int bitcount_dense(unsigned int n);

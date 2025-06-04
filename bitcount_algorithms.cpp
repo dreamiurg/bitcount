@@ -1,4 +1,11 @@
 #include "bitcount_algorithms.h"
+#include <vector>
+
+static std::vector<BitCountAlgorithm> algorithms;
+
+std::vector<BitCountAlgorithm>& get_algorithms() {
+  return algorithms;
+}
 
 int bitcount(unsigned int n) {
   int count = 0;
@@ -161,3 +168,18 @@ int bitcount_precomp24(unsigned int n) {
   return bits_in_24bits[n & 0xffffffu] +
          bits_in_char[(n >> 24) & 0xffu];
 }
+
+REGISTER_BITCOUNT_ALGO("Iterated", bitcount, nullptr)
+REGISTER_BITCOUNT_ALGO("Sparse", bitcount_sparse, nullptr)
+REGISTER_BITCOUNT_ALGO("Dense", bitcount_dense, nullptr)
+REGISTER_BITCOUNT_ALGO("Parallel", bitcount_parallel, nullptr)
+REGISTER_BITCOUNT_ALGO("Nifty", bitcount_nifty, nullptr)
+REGISTER_BITCOUNT_ALGO("Hakmem", bitcount_hakmem, nullptr)
+REGISTER_BITCOUNT_ALGO("Builtin", bitcount_builtin, nullptr)
+REGISTER_BITCOUNT_ALGO("POPCNT", bitcount_popcnt, nullptr)
+REGISTER_BITCOUNT_ALGO("SIMD", bitcount_simd, nullptr)
+REGISTER_BITCOUNT_ALGO("Prefix", bitcount_prefix, nullptr)
+REGISTER_BITCOUNT_ALGO("deBruijn", bitcount_debruijn, nullptr)
+REGISTER_BITCOUNT_ALGO("Precomp 8", bitcount_precomp8, create_precomp8)
+REGISTER_BITCOUNT_ALGO("Precomp 16", bitcount_precomp16, create_precomp16)
+REGISTER_BITCOUNT_ALGO("Precomp 24", bitcount_precomp24, create_precomp24)

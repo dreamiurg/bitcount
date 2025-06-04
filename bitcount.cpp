@@ -73,53 +73,18 @@ int main()
 {
   srand48(time(NULL));
 
-  // precompute lookup tables
-  {
-    StopWatch sw;
-    sw.Start();
-    create_precomp8();
-    sw.Stop();
-    printf("8-bit lookup table calculation took %.2f ms\n", (double)sw.ElapsedMicrosec() / 1000);
-  }
-  {
-    StopWatch sw;
-    sw.Start();
-    create_precomp16();
-    sw.Stop();
-    printf("16-bit lookup table calculation took %.2f ms\n", (double)sw.ElapsedMicrosec() / 1000);
-  }
-  {
-    StopWatch sw;
-    sw.Start();
-    create_precomp24();
-    sw.Stop();
-    printf("24-bit lookup table calculation took %.2f ms\n", (double)sw.ElapsedMicrosec() / 1000);
-  }
-
   const unsigned int iters = 100 * 1000 * 1000;
   std::vector<Result> results;
-
-  printf("\n---> Iterated methods\n");
-  results.push_back({"Iterated", run_test(iters, &bitcount, "Iterated")});
-  results.push_back({"Sparse",   run_test(iters, &bitcount_sparse, "Sparse")});
-  results.push_back({"Dense",    run_test(iters, &bitcount_dense, "Dense")});
-
-  printf("---> Parallel methods\n");
-  results.push_back({"Parallel", run_test(iters, &bitcount_parallel, "Parallel")});
-  results.push_back({"Nifty",    run_test(iters, &bitcount_nifty, "Nifty")});
-  results.push_back({"Hakmem",   run_test(iters, &bitcount_hakmem, "Hakmem")});
-
-  printf("---> Builtin method\n");
-  results.push_back({"Builtin",  run_test(iters, &bitcount_builtin, "Builtin")});
-  results.push_back({"POPCNT",   run_test(iters, &bitcount_popcnt, "POPCNT")});
-  results.push_back({"SIMD",     run_test(iters, &bitcount_simd, "SIMD")});
-  results.push_back({"Prefix",   run_test(iters, &bitcount_prefix, "Prefix")});
-  results.push_back({"deBruijn", run_test(iters, &bitcount_debruijn, "deBruijn")});
-
-  printf("---> Table lookup methods\n");
-  results.push_back({"Precomp 8",  run_test(iters, &bitcount_precomp8, "Precomp 8")});
-  results.push_back({"Precomp 16", run_test(iters, &bitcount_precomp16, "Precomp 16")});
-  results.push_back({"Precomp 24", run_test(iters, &bitcount_precomp24, "Precomp 24")});
+  for (auto& algo : get_algorithms()) {
+    if (algo.init) {
+      StopWatch sw;
+      sw.Start();
+      algo.init();
+      sw.Stop();
+      printf("%-12s setup took %.2f ms\n", algo.name, sw.ElapsedMicrosec() / 1000.0);
+    }
+    results.push_back({algo.name, run_test(iters, algo.func, algo.name)});
+  }
 
   std::sort(results.begin(), results.end(), [](const Result& a, const Result& b) { return a.mcps > b.mcps; });
   const double slowest = results.back().mcps;

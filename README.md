@@ -65,6 +65,20 @@ make test         # builds and executes bitcount_test
 
 Use `make clean` to remove the generated binaries and object files.
 
+## Adding new algorithms
+
+Implement a function returning the bit count and register it in
+`bitcount_algorithms.cpp`:
+
+```cpp
+int my_bitcount(unsigned int n) { /* ... */ }
+REGISTER_BITCOUNT_ALGO("MyAlgo", my_bitcount, nullptr);
+```
+
+If the algorithm requires setup, provide an initialization function and pass it
+as the third argument. Registered algorithms are automatically tested and run in
+the benchmark.
+
 Below are example timings obtained on a 2.26 GHz Core 2 Duo (gcc 4.2.1, `-O3`):
 
 ```
