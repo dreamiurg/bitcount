@@ -88,6 +88,13 @@ int main()
     sw.Stop();
     printf("16-bit lookup table calculation took %.2f ms\n", (double)sw.ElapsedMicrosec() / 1000);
   }
+  {
+    StopWatch sw;
+    sw.Start();
+    create_precomp24();
+    sw.Stop();
+    printf("24-bit lookup table calculation took %.2f ms\n", (double)sw.ElapsedMicrosec() / 1000);
+  }
 
   const unsigned int iters = 100 * 1000 * 1000;
   std::vector<Result> results;
@@ -104,10 +111,15 @@ int main()
 
   printf("---> Builtin method\n");
   results.push_back({"Builtin",  run_test(iters, &bitcount_builtin, "Builtin")});
+  results.push_back({"POPCNT",   run_test(iters, &bitcount_popcnt, "POPCNT")});
+  results.push_back({"SIMD",     run_test(iters, &bitcount_simd, "SIMD")});
+  results.push_back({"Prefix",   run_test(iters, &bitcount_prefix, "Prefix")});
+  results.push_back({"deBruijn", run_test(iters, &bitcount_debruijn, "deBruijn")});
 
   printf("---> Table lookup methods\n");
   results.push_back({"Precomp 8",  run_test(iters, &bitcount_precomp8, "Precomp 8")});
   results.push_back({"Precomp 16", run_test(iters, &bitcount_precomp16, "Precomp 16")});
+  results.push_back({"Precomp 24", run_test(iters, &bitcount_precomp24, "Precomp 24")});
 
   std::sort(results.begin(), results.end(), [](const Result& a, const Result& b) { return a.mcps > b.mcps; });
   const double slowest = results.back().mcps;

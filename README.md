@@ -1,6 +1,8 @@
 # Bit counting
 
 This small program measures and compares various bit counting algorithms.
+It includes classic bit tests as well as hardware POPCNT, SIMD shuffling,
+prefix-sum masking, de Bruijn scans and large precomputed lookup tables.
 
 More information about different approaches can be found in the following links:
 
