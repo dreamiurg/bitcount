@@ -1,7 +1,7 @@
 Bit counting
 ============
 
-This small program measures time required to count set bits in random data set.
+This small program measures the time required to count set bits in a random data set.
 
 More information about various algorithms:
 
