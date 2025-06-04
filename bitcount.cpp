@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include <sys/time.h>
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <chrono>
 #include "bitcount_algorithms.h"
 
 struct Result {
@@ -18,34 +18,20 @@ struct Result {
 
 class StopWatch {
 public:
-  StopWatch() : m_start(0), m_stop(0) {}
+  void Start() { m_start = clock::now(); }
+  void Stop() { m_stop = clock::now(); }
 
-  void Start() 	{
-    m_start = NowMicroseconds();
-  }
-  void Stop()		{
-    m_stop  = NowMicroseconds();
-  }
-
-  // returns number of microseconds elapsed between Start() and Stop() calls
   unsigned long ElapsedMicrosec() const {
-    return (m_stop > m_start) ? (m_stop - m_start) : 0;
-  }
-
-  static unsigned long NowMicroseconds() {
-    struct timeval tv = {};
-
-    if ( gettimeofday(&tv, NULL) == 0) {
-      return tv.tv_sec * 1000 * 1000 + tv.tv_usec;
-    }
-
-    return 0;
+    return std::chrono::duration_cast<std::chrono::microseconds>(
+             m_stop - m_start).count();
   }
 
 private:
-  unsigned long m_start;
-  unsigned long m_stop;
+  using clock = std::chrono::steady_clock;
+  std::chrono::time_point<clock> m_start{};
+  std::chrono::time_point<clock> m_stop{};
 };
+
 
 // bit-counting function
 typedef int (*bc_function)(unsigned int);
