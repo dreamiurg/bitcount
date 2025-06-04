@@ -11,6 +11,20 @@ int main() {
 
     std::mt19937 rng(12345);
     const int trials = 100000;
+
+    // Verify a few explicit values first
+    const unsigned int test_values[] = {0u, 1u, 0xFFFFFFFFu};
+    for (unsigned int value : test_values) {
+        int ref = __builtin_popcount(value);
+        assert(bitcount(value) == ref);
+        assert(bitcount_sparse(value) == ref);
+        assert(bitcount_dense(value) == ref);
+        assert(bitcount_precomp8(value) == ref);
+        assert(bitcount_precomp16(value) == ref);
+        assert(bitcount_parallel(value) == ref);
+        assert(bitcount_nifty(value) == ref);
+        assert(bitcount_hakmem(value) == ref);
+    }
     for (int i = 0; i < trials; ++i) {
         unsigned int value = rng();
         int ref = __builtin_popcount(value);
