@@ -6,10 +6,11 @@
 #include "bitcount_algorithms.h"
 
 int main() {
-  // Initialize lookup tables for precomputed methods
-  create_precomp8();
-  create_precomp16();
-  create_precomp24();
+  for (auto& algo : get_algorithms()) {
+    if (algo.init) {
+      algo.init();
+    }
+  }
 
   std::mt19937 rng(12345);
   const int trials = 100000;
@@ -22,20 +23,9 @@ int main() {
 
   for (unsigned int value : test_values) {
     int ref = __builtin_popcount(value);
-    assert(bitcount(value) == ref);
-    assert(bitcount_sparse(value) == ref);
-    assert(bitcount_dense(value) == ref);
-    assert(bitcount_precomp8(value) == ref);
-    assert(bitcount_precomp16(value) == ref);
-    assert(bitcount_parallel(value) == ref);
-    assert(bitcount_nifty(value) == ref);
-    assert(bitcount_hakmem(value) == ref);
-    assert(bitcount_builtin(value) == ref);
-    assert(bitcount_popcnt(value) == ref);
-    assert(bitcount_simd(value) == ref);
-    assert(bitcount_prefix(value) == ref);
-    assert(bitcount_debruijn(value) == ref);
-    assert(bitcount_precomp24(value) == ref);
+    for (auto& algo : get_algorithms()) {
+      assert(algo.func(value) == ref);
+    }
   }
   std::cout << "All bitcount tests passed!" << std::endl;
   return 0;
