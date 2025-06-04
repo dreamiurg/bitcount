@@ -1,32 +1,32 @@
-CXX ? = g++
-        CXXFLAGS ? = -std = c++11 - O2
+CXX ?= g++
+CXXFLAGS ?= -std=c++11 -O2
 
-                            BENCH_OBJS = bitcount.o bitcount_algorithms.o
-TEST_OBJS = bitcount_test.o bitcount_algorithms.o
+BENCH_OBJS = bitcount.o bitcount_algorithms.o
+TEST_OBJS  = bitcount_test.o bitcount_algorithms.o
 
-                              all : bitcount_test
+all: bitcount_test
 
-                              bitcount.o : bitcount.cpp bitcount_algorithms.h
-                              $(CXX) $(CXXFLAGS) - c bitcount.cpp - o $@
+bitcount.o: bitcount.cpp bitcount_algorithms.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-                              bitcount_algorithms.o : bitcount_algorithms.cpp bitcount_algorithms.h
-                              $(CXX) $(CXXFLAGS) - c bitcount_algorithms.cpp - o $@
+bitcount_algorithms.o: bitcount_algorithms.cpp bitcount_algorithms.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-                              bitcount_test.o : bitcount_test.cpp bitcount_algorithms.h
-                              $(CXX) $(CXXFLAGS) - c bitcount_test.cpp - o $@
+bitcount_test.o: bitcount_test.cpp bitcount_algorithms.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-                              bitcount : $(BENCH_OBJS)
-                              $(CXX) $(CXXFLAGS) $(BENCH_OBJS) - o $@
+bitcount: $(BENCH_OBJS)
+	$(CXX) $(CXXFLAGS) $(BENCH_OBJS) -o $@
 
-                              bitcount_test : $(TEST_OBJS)
-                              $(CXX) $(CXXFLAGS) $(TEST_OBJS) - o $@
+bitcount_test: $(TEST_OBJS)
+	$(CXX) $(CXXFLAGS) $(TEST_OBJS) -o $@
 
-                              .PHONY : clean test bench
+.PHONY: clean test bench
 
-                              test : bitcount_test
-                              . / bitcount_test
+test: bitcount_test
+	./bitcount_test
 
-                              bench : bitcount
+bench: bitcount
 
-                              clean :
-                              rm - f * .o bitcount bitcount_test
+clean:
+	rm -f *.o bitcount bitcount_test
