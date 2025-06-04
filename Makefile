@@ -1,5 +1,12 @@
 CXX ?= g++
-CXXFLAGS ?= -std=c++11 -O2 -msse4.2
+CXXFLAGS_BASE ?= -std=c++11 -O2
+UNAME_M := $(shell uname -m)
+
+ifeq ($(filter x86_64 i386 i686,$(UNAME_M)),)
+CXXFLAGS ?= $(CXXFLAGS_BASE)
+else
+CXXFLAGS ?= $(CXXFLAGS_BASE) -msse4.2
+endif
 
 BENCH_OBJS = bitcount.o bitcount_algorithms.o
 TEST_OBJS  = bitcount_test.o bitcount_algorithms.o
