@@ -44,7 +44,7 @@ void run_test(const unsigned int iters, bc_function bcf, const char* name)
 	StopWatch sw;
 	sw.Start();
 	
-	int num_of_bits = 0;
+        unsigned long long num_of_bits = 0;
 	for(unsigned int i = 0; i < iters; ++i)
 	{
 		num_of_bits += (*bcf)(lrand48());
