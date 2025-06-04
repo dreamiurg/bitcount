@@ -160,7 +160,7 @@ int main()
 {
 	srand48(time(NULL));
 	
-	// pre-calc lookup tables
+	// precompute lookup tables
 	{
 		StopWatch sw;
 		sw.Start();
