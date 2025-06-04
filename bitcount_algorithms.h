@@ -14,5 +14,6 @@ int bitcount_precomp16(unsigned int n);
 int bitcount_parallel(unsigned int n);
 int bitcount_nifty(unsigned int n);
 int bitcount_hakmem(unsigned int n);
+int bitcount_builtin(unsigned int n);
 
 #endif // BITCOUNT_ALGORITHMS_H

@@ -29,6 +29,7 @@ int main() {
     assert(bitcount_parallel(value) == ref);
     assert(bitcount_nifty(value) == ref);
     assert(bitcount_hakmem(value) == ref);
+    assert(bitcount_builtin(value) == ref);
   }
   std::cout << "All bitcount tests passed!" << std::endl;
   return 0;
