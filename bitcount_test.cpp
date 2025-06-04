@@ -9,6 +9,7 @@ int main() {
   // Initialize lookup tables for precomputed methods
   create_precomp8();
   create_precomp16();
+  create_precomp24();
 
   std::mt19937 rng(12345);
   const int trials = 100000;
@@ -30,6 +31,11 @@ int main() {
     assert(bitcount_nifty(value) == ref);
     assert(bitcount_hakmem(value) == ref);
     assert(bitcount_builtin(value) == ref);
+    assert(bitcount_popcnt(value) == ref);
+    assert(bitcount_simd(value) == ref);
+    assert(bitcount_prefix(value) == ref);
+    assert(bitcount_debruijn(value) == ref);
+    assert(bitcount_precomp24(value) == ref);
   }
   std::cout << "All bitcount tests passed!" << std::endl;
   return 0;

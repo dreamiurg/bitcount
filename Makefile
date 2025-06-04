@@ -1,5 +1,5 @@
 CXX ?= g++
-CXXFLAGS ?= -std=c++11 -O2
+CXXFLAGS ?= -std=c++11 -O2 -msse4.2
 
 BENCH_OBJS = bitcount.o bitcount_algorithms.o
 TEST_OBJS  = bitcount_test.o bitcount_algorithms.o

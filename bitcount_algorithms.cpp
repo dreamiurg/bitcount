@@ -89,3 +89,65 @@ int bitcount_hakmem(unsigned int n) {
 int bitcount_builtin(unsigned int n) {
   return __builtin_popcount(n);
 }
+
+#include <nmmintrin.h>
+
+int bitcount_popcnt(unsigned int n) {
+  return _mm_popcnt_u32(n);
+}
+
+#include <tmmintrin.h>
+
+int bitcount_simd(unsigned int n) {
+  const __m128i lookup = _mm_setr_epi8(
+    0, 1, 1, 2, 1, 2, 2, 3,
+    1, 2, 2, 3, 2, 3, 3, 4
+  );
+  __m128i v = _mm_set1_epi32(n);
+  __m128i low_mask = _mm_set1_epi8(0x0f);
+  __m128i lo = _mm_and_si128(v, low_mask);
+  __m128i hi = _mm_and_si128(_mm_srli_epi16(v, 4), low_mask);
+  __m128i cnt1 = _mm_shuffle_epi8(lookup, lo);
+  __m128i cnt2 = _mm_shuffle_epi8(lookup, hi);
+  __m128i sum = _mm_add_epi8(cnt1, cnt2);
+  __m128i sad = _mm_sad_epu8(sum, _mm_setzero_si128());
+  int total = _mm_extract_epi16(sad, 0) + _mm_extract_epi16(sad, 4);
+  return total / 4;
+}
+
+int bitcount_prefix(unsigned int n) {
+  n -= (n >> 1) & 0x55555555u;
+  n = (n & 0x33333333u) + ((n >> 2) & 0x33333333u);
+  n = (n + (n >> 4)) & 0x0f0f0f0fu;
+  return (n * 0x01010101u) >> 24;
+}
+
+int bitcount_debruijn(unsigned int n) {
+  static const int table[32] = {
+    0, 1, 28, 2, 29, 14, 24, 3,
+    30, 22, 20, 15, 25, 17, 4, 8,
+    31, 27, 13, 23, 21, 19, 16, 7,
+    26, 12, 18, 6, 11, 5, 10, 9
+  };
+  int count = 0;
+  while (n) {
+    unsigned int lsb = n & -n;
+    (void)table[(lsb * 0x077CB531u) >> 27];
+    n &= n - 1;
+    count++;
+  }
+  return count;
+}
+
+static char bits_in_24bits[0x1u << 24];
+
+void create_precomp24() {
+  for (unsigned int i = 0; i < (0x1u << 24); ++i) {
+    bits_in_24bits[i] = bitcount(i);
+  }
+}
+
+int bitcount_precomp24(unsigned int n) {
+  return bits_in_24bits[n & 0xffffffu] +
+         bits_in_char[(n >> 24) & 0xffu];
+}
