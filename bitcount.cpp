@@ -77,7 +77,11 @@ int main()
   std::vector<Result> results;
   for (auto& algo : get_algorithms()) {
     if (algo.init) {
+      StopWatch sw;
+      sw.Start();
       algo.init();
+      sw.Stop();
+      printf("%-12s setup took %.2f ms\n", algo.name, sw.ElapsedMicrosec() / 1000.0);
     }
     results.push_back({algo.name, run_test(iters, algo.func, algo.name)});
   }
