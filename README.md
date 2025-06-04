@@ -4,6 +4,32 @@ This small program measures and compares various bit counting algorithms.
 It includes classic bit tests as well as hardware POPCNT, SIMD shuffling,
 prefix-sum masking, de Bruijn scans and large precomputed lookup tables.
 
+## Algorithms implemented
+
+* **Iterated** – shifts the number right one bit at a time while adding the low bit.
+  This simple approach is easy to understand but slow.
+* **Sparse** – clears the lowest set bit with `n &= n - 1` until the value becomes zero.
+  Works well when few bits are set.
+* **Dense** – complements the input and then uses the sparse method to count zero bits.
+  More efficient when most bits are set.
+* **Parallel** – uses arithmetic masks to add neighboring bits together in groups.
+  Produces the count after a few mask-and-add steps.
+* **Nifty** – performs similar masking but finishes with a modulo 255 operation.
+  This avoids carrying bits across word boundaries.
+* **Hakmem** – algorithm from MIT's HAKMEM that folds shifted versions of the number together.
+  It shows clever bit twiddling to count quickly.
+* **Builtin** – calls the compiler intrinsic `__builtin_popcount`.
+  The compiler chooses the best implementation.
+* **POPCNT** – directly invokes the CPU POPCNT instruction available on modern processors.
+* **SIMD** – uses SSSE3 byte shuffle instructions to count bits across four bytes in parallel.
+* **Prefix** – computes prefix sums of bit pairs.
+  Multiplying by a constant accumulates the sums across the whole word.
+* **deBruijn** – isolates each lowest set bit using a de Bruijn table and counts one per iteration.
+* **Precomp 8** – looks up each byte in a 256‑entry table of precomputed values and sums them.
+* **Precomp 16** – extends the lookup approach to 16‑bit values, requiring two table accesses.
+* **Precomp 24** – uses a huge table for 24 bits.
+  A byte lookup handles the remaining bits.
+
 More information about different approaches can be found in the following links:
 
 * [Overview of bit counting method](http://demiurg.com.ua/blog/2010/04/11/bit-counting) (in russian)
