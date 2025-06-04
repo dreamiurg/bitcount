@@ -18,18 +18,17 @@ public:
 	// returns number of microseconds elapsed between Start() and Stop() calls
 	unsigned long ElapsedMicrosec() const { return (m_stop > m_start) ? (m_stop - m_start) : 0;	}
 
-	static unsigned long NowMicroseconds()
-	{
-		struct timeval tv = {};
-		struct timezone tz = {0, DST_NONE};
+        static unsigned long NowMicroseconds()
+        {
+                struct timeval tv = {};
 
-		if( gettimeofday(&tv, &tz) == 0)
-		{
-			return tv.tv_sec * 1000 * 1000 + tv.tv_usec;
-		}
+                if( gettimeofday(&tv, NULL) == 0)
+                {
+                        return tv.tv_sec * 1000 * 1000 + tv.tv_usec;
+                }
 
-		return 0;
-	}
+                return 0;
+        }
 		
 private:
 	unsigned long m_start;
