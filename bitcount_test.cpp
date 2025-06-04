@@ -6,7 +6,7 @@
 #include "bitcount_algorithms.h"
 
 int main() {
-  for (auto& algo : get_algorithms()) {
+  for (auto& algo : g1()) {
     if (algo.init) {
       algo.init();
     }
@@ -23,7 +23,7 @@ int main() {
 
   for (unsigned int value : test_values) {
     int ref = __builtin_popcount(value);
-    for (auto& algo : get_algorithms()) {
+    for (auto& algo : g1()) {
       assert(algo.func(value) == ref);
     }
   }
