@@ -11,12 +11,12 @@
 #include <chrono>
 #include "bitcount_algorithms.h"
 
-struct Result {
-  std::string name;
-  double mcps;
+struct R {
+  std::string n;
+  double m;
 };
 
-class StopWatch {
+class SW {
 public:
   void Start() { m_start = clock::now(); }
   void Stop() { m_stop = clock::now(); }
@@ -34,24 +34,24 @@ private:
 
 
 // bit-counting function
-typedef int (*bc_function)(unsigned int);
+typedef int (*bF)(unsigned int);
 
-double run_test(const unsigned int iters, bc_function bcf, const char* name)
+double rT(const unsigned int iT, bF bFf, const char* n)
 {
-  StopWatch sw;
+  SW sw;
   sw.Start();
 
   unsigned long long num_of_bits = 0;
-  for (unsigned int i = 0; i < iters; ++i)
+  for (unsigned int i = 0; i < iT; ++i)
   {
-    num_of_bits += (*bcf)(lrand48());
+    num_of_bits += (*bFf)(lrand48());
   }
 
   sw.Stop();
   const unsigned long elapsed = sw.ElapsedMicrosec();
 
-  const double mcps = (double)iters / elapsed;
-  printf("%-12s %8.3f sec %8.3f Mcps\n", name, elapsed / 1000000.0, mcps);
+  const double mcps = (double)iT / elapsed;
+  printf("%-12s %8.3f sec %8.3f Mcps\n", n, elapsed / 1000000.0, mcps);
   return mcps;
 }
 
@@ -60,24 +60,24 @@ int main()
   srand48(time(NULL));
 
   const unsigned int iters = 100 * 1000 * 1000;
-  std::vector<Result> results;
-  for (auto& algo : get_algorithms()) {
+  std::vector<R> results;
+  for (auto& algo : g1()) {
     if (algo.init) {
-      StopWatch sw;
+      SW sw;
       sw.Start();
       algo.init();
       sw.Stop();
       printf("%-12s setup took %.2f ms\n", algo.name, sw.ElapsedMicrosec() / 1000.0);
     }
-    results.push_back({algo.name, run_test(iters, algo.func, algo.name)});
+    results.push_back({algo.name, rT(iters, algo.func, algo.name)});
   }
 
-  std::sort(results.begin(), results.end(), [](const Result& a, const Result& b) { return a.mcps > b.mcps; });
-  const double slowest = results.back().mcps;
+  std::sort(results.begin(), results.end(), [](const R& a, const R& b) { return a.m > b.m; });
+  const double slowest = results.back().m;
 
   printf("\nSummary (fastest to slowest)\n");
   for (const auto& r : results) {
-    printf("%-12s %5.1fx\n", r.name.c_str(), r.mcps / slowest);
+    printf("%-12s %5.1fx\n", r.n.c_str(), r.m / slowest);
   }
 
   return 0;

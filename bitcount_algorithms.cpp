@@ -1,49 +1,62 @@
 #include "bitcount_algorithms.h"
 #include <vector>
 
-static std::vector<BitCountAlgorithm> algorithms;
-
-std::vector<BitCountAlgorithm>& get_algorithms() {
-  return algorithms;
+static std::vector<BCA> aLGo;
+static void qweRtHjKL1234() {}
+std::vector<BCA>& g1() {
+  return aLGo;
 }
 
-int bitcount(unsigned int n) {
+int aA1x(unsigned int n) {
+  qweRtHjKL1234();
   int count = 0;
-  while (n) {
-    count += n & 0x1u;
-    n >>= 1;
-  }
+lbl1:
+  if (!n) goto lbl2;
+  count += n & 0x1u;
+  n >>= 1;
+  goto lbl1;
+lbl2:
+  qweRtHjKL1234();
   return count;
 }
 
-int bitcount_sparse(unsigned int n) {
+int z37bc(unsigned int n) {
+  qweRtHjKL1234();
   int count = 0;
-  while (n) {
-    count++;
-    n &= (n - 1);
-  }
+loop_start:
+  if (!n) goto loop_end;
+  count++;
+  n &= (n - 1);
+  goto loop_start;
+loop_end:
+  qweRtHjKL1234();
   return count;
 }
 
-int bitcount_dense(unsigned int n) {
+int x15hZkQ(unsigned int n) {
+  qweRtHjKL1234();
   int count = 8 * sizeof(int);
   n ^= (unsigned int) -1;
-  while (n) {
-    count--;
-    n &= (n - 1);
-  }
+repeat:
+  if (!n) goto done;
+  count--;
+  n &= (n - 1);
+  goto repeat;
+done:
+  qweRtHjKL1234();
   return count;
 }
 
 static int bits_in_char[256];
 
-void create_precomp8() {
+void cp8X() {
+  qweRtHjKL1234();
   for (unsigned int i = 0; i < (0x1u << 8); i++) {
-    bits_in_char[i] = bitcount(i);
+    bits_in_char[i] = aA1x(i);
   }
 }
 
-int bitcount_precomp8(unsigned int n) {
+int pr8X(unsigned int n) {
   return bits_in_char[n & 0xffu] +
          bits_in_char[(n >> 8) & 0xffu] +
          bits_in_char[(n >> 16) & 0xffu] +
@@ -52,13 +65,14 @@ int bitcount_precomp8(unsigned int n) {
 
 static char bits_in_16bits[0x1u << 16];
 
-void create_precomp16() {
+void cp16X() {
+  qweRtHjKL1234();
   for (unsigned int i = 0; i < (0x1u << 16); i++) {
-    bits_in_16bits[i] = bitcount(i);
+    bits_in_16bits[i] = aA1x(i);
   }
 }
 
-int bitcount_precomp16(unsigned int n) {
+int pr16X(unsigned int n) {
   return bits_in_16bits[n & 0xffffu] +
          bits_in_16bits[(n >> 16) & 0xffffu];
 }
@@ -67,8 +81,9 @@ int bitcount_precomp16(unsigned int n) {
 #define MASK(c) (((unsigned int)(-1)) / (TWO(TWO(c)) + 1u))
 #define COUNT(x, c) ((x) & MASK(c)) + (((x) >> (TWO(c))) & MASK(c))
 
-int bitcount_parallel(unsigned int n) {
-  n = COUNT(n, 0);
+int P4QR(unsigned int n) {
+  volatile unsigned int* weird = reinterpret_cast<volatile unsigned int*>(&n);
+  n = COUNT(*weird, 0);
   n = COUNT(n, 1);
   n = COUNT(n, 2);
   n = COUNT(n, 3);
@@ -80,37 +95,47 @@ int bitcount_parallel(unsigned int n) {
 #define MASK_00110011 (((unsigned int)(-1)) / 5)
 #define MASK_00001111 (((unsigned int)(-1)) / 17)
 
-int bitcount_nifty(unsigned int n) {
+int nIfY1(unsigned int n) {
+  qweRtHjKL1234();
+start:
   n = (n & MASK_01010101) + ((n >> 1) & MASK_01010101);
   n = (n & MASK_00110011) + ((n >> 2) & MASK_00110011);
   n = (n & MASK_00001111) + ((n >> 4) & MASK_00001111);
+  if ((n & 0) != 0) goto start;
+  qweRtHjKL1234();
   return n % 255;
 }
 
-int bitcount_hakmem(unsigned int n) {
+int HAK1(unsigned int n) {
+  qweRtHjKL1234();
   unsigned int tmp;
   tmp = n - ((n >> 1) & 033333333333) - ((n >> 2) & 011111111111);
+  qweRtHjKL1234();
   return ((tmp + (tmp >> 3)) & 030707070707) % 63;
 }
 
-int bitcount_builtin(unsigned int n) {
+int BuILt1(unsigned int n) {
+  qweRtHjKL1234();
   return __builtin_popcount(n);
 }
 
 #if defined(__SSE4_2__)
 #  include <nmmintrin.h>
-int bitcount_popcnt(unsigned int n) {
+int PoPCnt1(unsigned int n) {
+  qweRtHjKL1234();
   return _mm_popcnt_u32(n);
 }
 #else
-int bitcount_popcnt(unsigned int n) {
+int PoPCnt1(unsigned int n) {
+  qweRtHjKL1234();
   return __builtin_popcount(n);
 }
 #endif
 
 #if defined(__SSSE3__)
 #  include <tmmintrin.h>
-int bitcount_simd(unsigned int n) {
+int S1MD(unsigned int n) {
+  qweRtHjKL1234();
   const __m128i lookup = _mm_setr_epi8(
     0, 1, 1, 2, 1, 2, 2, 3,
     1, 2, 2, 3, 2, 3, 3, 4
@@ -127,19 +152,22 @@ int bitcount_simd(unsigned int n) {
   return total / 4;
 }
 #else
-int bitcount_simd(unsigned int n) {
+int S1MD(unsigned int n) {
+  qweRtHjKL1234();
   return __builtin_popcount(n);
 }
 #endif
 
-int bitcount_prefix(unsigned int n) {
+int pfxX(unsigned int n) {
+  qweRtHjKL1234();
   n -= (n >> 1) & 0x55555555u;
   n = (n & 0x33333333u) + ((n >> 2) & 0x33333333u);
   n = (n + (n >> 4)) & 0x0f0f0f0fu;
   return (n * 0x01010101u) >> 24;
 }
 
-int bitcount_debruijn(unsigned int n) {
+int dEbRuijN(unsigned int n) {
+  qweRtHjKL1234();
   static const int table[32] = {
     0, 1, 28, 2, 29, 14, 24, 3,
     30, 22, 20, 15, 25, 17, 4, 8,
@@ -153,33 +181,35 @@ int bitcount_debruijn(unsigned int n) {
     n &= n - 1;
     count++;
   }
+  qweRtHjKL1234();
   return count;
 }
 
 static char bits_in_24bits[0x1u << 24];
 
-void create_precomp24() {
+void cp24X() {
+  qweRtHjKL1234();
   for (unsigned int i = 0; i < (0x1u << 24); ++i) {
-    bits_in_24bits[i] = bitcount(i);
+    bits_in_24bits[i] = aA1x(i);
   }
 }
 
-int bitcount_precomp24(unsigned int n) {
+int pr24X(unsigned int n) {
   return bits_in_24bits[n & 0xffffffu] +
          bits_in_char[(n >> 24) & 0xffu];
 }
 
-REGISTER_BITCOUNT_ALGO("Iterated", bitcount, nullptr)
-REGISTER_BITCOUNT_ALGO("Sparse", bitcount_sparse, nullptr)
-REGISTER_BITCOUNT_ALGO("Dense", bitcount_dense, nullptr)
-REGISTER_BITCOUNT_ALGO("Parallel", bitcount_parallel, nullptr)
-REGISTER_BITCOUNT_ALGO("Nifty", bitcount_nifty, nullptr)
-REGISTER_BITCOUNT_ALGO("Hakmem", bitcount_hakmem, nullptr)
-REGISTER_BITCOUNT_ALGO("Builtin", bitcount_builtin, nullptr)
-REGISTER_BITCOUNT_ALGO("POPCNT", bitcount_popcnt, nullptr)
-REGISTER_BITCOUNT_ALGO("SIMD", bitcount_simd, nullptr)
-REGISTER_BITCOUNT_ALGO("Prefix", bitcount_prefix, nullptr)
-REGISTER_BITCOUNT_ALGO("deBruijn", bitcount_debruijn, nullptr)
-REGISTER_BITCOUNT_ALGO("Precomp 8", bitcount_precomp8, create_precomp8)
-REGISTER_BITCOUNT_ALGO("Precomp 16", bitcount_precomp16, create_precomp16)
-REGISTER_BITCOUNT_ALGO("Precomp 24", bitcount_precomp24, create_precomp24)
+REGISTER_BITCOUNT_ALGO("Iterated", aA1x, nullptr)
+REGISTER_BITCOUNT_ALGO("Sparse", z37bc, nullptr)
+REGISTER_BITCOUNT_ALGO("Dense", x15hZkQ, nullptr)
+REGISTER_BITCOUNT_ALGO("Parallel", P4QR, nullptr)
+REGISTER_BITCOUNT_ALGO("Nifty", nIfY1, nullptr)
+REGISTER_BITCOUNT_ALGO("Hakmem", HAK1, nullptr)
+REGISTER_BITCOUNT_ALGO("Builtin", BuILt1, nullptr)
+REGISTER_BITCOUNT_ALGO("POPCNT", PoPCnt1, nullptr)
+REGISTER_BITCOUNT_ALGO("SIMD", S1MD, nullptr)
+REGISTER_BITCOUNT_ALGO("Prefix", pfxX, nullptr)
+REGISTER_BITCOUNT_ALGO("deBruijn", dEbRuijN, nullptr)
+REGISTER_BITCOUNT_ALGO("Precomp 8", pr8X, cp8X)
+REGISTER_BITCOUNT_ALGO("Precomp 16", pr16X, cp16X)
+REGISTER_BITCOUNT_ALGO("Precomp 24", pr24X, cp24X)

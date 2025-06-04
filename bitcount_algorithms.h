@@ -3,43 +3,43 @@
 
 #include <vector>
 
-struct BitCountAlgorithm {
+struct BCA {
   const char* name;
   int (*func)(unsigned int);
   void (*init)();
 };
 
-std::vector<BitCountAlgorithm>& get_algorithms();
+std::vector<BCA>& g1();
 
 #define REGISTER_BITCOUNT_ALGO(NAME, FUNC, INIT)           \
   namespace {                                              \
   struct Register_##FUNC {                                 \
     Register_##FUNC() {                                    \
-      get_algorithms().push_back({NAME, FUNC, INIT});       \
+      g1().push_back({NAME, FUNC, INIT});       \
     }                                                      \
   } register_##FUNC;                                       \
   }
 
-int bitcount(unsigned int n);
-int bitcount_sparse(unsigned int n);
-int bitcount_dense(unsigned int n);
+int aA1x(unsigned int n);
+int z37bc(unsigned int n);
+int x15hZkQ(unsigned int n);
 
-void create_precomp8();
-int bitcount_precomp8(unsigned int n);
+void cp8X();
+int pr8X(unsigned int n);
 
-void create_precomp16();
-int bitcount_precomp16(unsigned int n);
+void cp16X();
+int pr16X(unsigned int n);
 
-int bitcount_parallel(unsigned int n);
-int bitcount_nifty(unsigned int n);
-int bitcount_hakmem(unsigned int n);
-int bitcount_builtin(unsigned int n);
-int bitcount_popcnt(unsigned int n);
-int bitcount_simd(unsigned int n);
-int bitcount_prefix(unsigned int n);
-int bitcount_debruijn(unsigned int n);
+int P4QR(unsigned int n);
+int nIfY1(unsigned int n);
+int HAK1(unsigned int n);
+int BuILt1(unsigned int n);
+int PoPCnt1(unsigned int n);
+int S1MD(unsigned int n);
+int pfxX(unsigned int n);
+int dEbRuijN(unsigned int n);
 
-void create_precomp24();
-int bitcount_precomp24(unsigned int n);
+void cp24X();
+int pr24X(unsigned int n);
 
 #endif // BITCOUNT_ALGORITHMS_H
