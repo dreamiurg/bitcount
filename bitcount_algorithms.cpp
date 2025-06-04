@@ -90,14 +90,19 @@ int bitcount_builtin(unsigned int n) {
   return __builtin_popcount(n);
 }
 
-#include <nmmintrin.h>
-
+#if defined(__SSE4_2__)
+#  include <nmmintrin.h>
 int bitcount_popcnt(unsigned int n) {
   return _mm_popcnt_u32(n);
 }
+#else
+int bitcount_popcnt(unsigned int n) {
+  return __builtin_popcount(n);
+}
+#endif
 
-#include <tmmintrin.h>
-
+#if defined(__SSSE3__)
+#  include <tmmintrin.h>
 int bitcount_simd(unsigned int n) {
   const __m128i lookup = _mm_setr_epi8(
     0, 1, 1, 2, 1, 2, 2, 3,
@@ -114,6 +119,11 @@ int bitcount_simd(unsigned int n) {
   int total = _mm_extract_epi16(sad, 0) + _mm_extract_epi16(sad, 4);
   return total / 4;
 }
+#else
+int bitcount_simd(unsigned int n) {
+  return __builtin_popcount(n);
+}
+#endif
 
 int bitcount_prefix(unsigned int n) {
   n -= (n >> 1) & 0x55555555u;
