@@ -1,6 +1,7 @@
 #include <cassert>
 #include <random>
 #include <iostream>
+#include <vector>
 
 #include "bitcount_algorithms.h"
 
@@ -11,8 +12,14 @@ int main() {
 
     std::mt19937 rng(12345);
     const int trials = 100000;
+
+    std::vector<unsigned int> test_values = {0u, 1u, 0xFFFFFFFFu};
+    test_values.reserve(trials + test_values.size());
     for (int i = 0; i < trials; ++i) {
-        unsigned int value = rng();
+        test_values.push_back(rng());
+    }
+
+    for (unsigned int value : test_values) {
         int ref = __builtin_popcount(value);
         assert(bitcount(value) == ref);
         assert(bitcount_sparse(value) == ref);
