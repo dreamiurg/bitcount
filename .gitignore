@@ -1,0 +1,12 @@
+# Compiled binaries
+bitcount
+bitcount_test
+
+# Object files
+*.o
+
+# macOS metadata
+.DS_Store
+
+# Debug symbol folders
+*.dSYM/
